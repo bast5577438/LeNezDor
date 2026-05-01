@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nez d'Or — Cérémonie de Remise de Prix</title>
+
+  <!--
+    Polices Google Fonts :
+    - Cormorant Garamond : police serif élégante utilisée pour les titres et éléments décoratifs
+    - Inter : police sans-serif moderne utilisée pour le corps de texte
+  -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================
+       RESET & VARIABLES GLOBALES
+       ========================================================= */
+
+    /* Reset minimal : supprime les marges/padding par défaut et
+       utilise box-sizing border-box pour un calcul de tailles cohérent */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* Palette de couleurs centralisée via des variables CSS.
+       Modifier ces valeurs suffit pour changer le thème de tout le site. */
+    :root {
+      --gold: #c9a961;        /* Or principal */
+      --gold-dark: #a88841;   /* Or foncé (accents, textes sur fond clair) */
+      --gold-light: #e8d5a0;  /* Or clair (dégradés) */
+      --cream: #faf6ee;       /* Fond général crème */
+      --ink: #1a1410;         /* Texte principal quasi-noir */
+      --ink-soft: #3d342a;    /* Texte secondaire brun doux */
+      --paper: #fffdf7;       /* Fond des cartes, légèrement plus blanc que cream */
+    }
+
+    /* Défilement fluide lors des clics sur les ancres de navigation */
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden; /* Empêche le scroll horizontal parasite */
+    }
+
+    /* Tous les titres utilisent Cormorant Garamond pour l'esthétique luxe */
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* =========================================================
+       NAVIGATION FIXE
+       ========================================================= */
+
+    /* La nav reste visible en haut de page lors du scroll.
+       backdrop-filter: blur() crée un effet "verre dépoli" sur le fond. */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      padding: 20px 40px;
+      background: rgba(250, 246, 238, 0.92); /* Crème semi-transparent */
+      backdrop-filter: blur(10px);
+      z-index: 100; /* Au-dessus de tout le contenu */
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(201, 169, 97, 0.2);
+    }
+
+    /* Logo textuel en haut à gauche */
+    nav .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--gold-dark);
+      letter-spacing: 0.15em;
+    }
+
+    /* Liens de navigation horizontaux */
+    nav ul {
+      display: flex; gap: 32px; list-style: none;
+    }
+    nav a {
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    nav a:hover { color: var(--gold-dark); }
+
+    /* =========================================================
+       SECTION HERO (plein écran d'accueil)
+       ========================================================= */
+
+    /* Le hero occupe 100% de la hauteur de la fenêtre.
+       Les deux radial-gradient créent une lumière dorée en haut et en bas. */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center;
+      padding: 100px 20px 60px; /* Compense la nav fixe en haut */
+      position: relative;
+      background:
+        radial-gradient(ellipse at top, rgba(201, 169, 97, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse at bottom, rgba(232, 213, 160, 0.15) 0%, transparent 60%),
+        var(--cream);
+    }
+
+    /* Double cadre décoratif en or autour du hero via pseudo-éléments.
+       ::before = cadre extérieur (plus opaque), ::after = cadre intérieur (plus discret) */
+    .hero::before {
+      content: ""; position: absolute; inset: 40px;
+      border: 1px solid var(--gold);
+      pointer-events: none; /* Ne bloque pas les clics */
+      opacity: 0.4;
+    }
+    .hero::after {
+      content: ""; position: absolute; inset: 50px;
+      border: 1px solid var(--gold);
+      pointer-events: none;
+      opacity: 0.2;
+    }
+
+    /* Emblème SVG du nez animé à l'apparition */
+    .nose-emblem {
+      width: 110px; height: 110px;
+      margin-bottom: 32px;
+      animation: fadeInScale 1.2s ease-out;
+    }
+
+    /* Séparateur décoratif avec lignes + texte centré (ex: "2026 ÉDITION") */
+    .ornament {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 24px;
+      color: var(--gold-dark);
+      animation: fadeIn 1.4s ease-out;
+    }
+    .ornament .line { width: 60px; height: 1px; background: var(--gold); }
+    .ornament .symbol { font-size: 0.9rem; letter-spacing: 0.3em; }
+
+    /* Titre principal responsive avec clamp() :
+       taille minimum 3rem, idéale 9vw, maximum 6.5rem */
+    .hero h1 {
+      font-size: clamp(3rem, 9vw, 6.5rem);
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.05;
+      margin-bottom: 20px;
+      animation: fadeInUp 1.2s ease-out;
+    }
+    /* Le <em> dans le h1 colore "Nez d'Or" en doré */
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold-dark);
+      font-weight: 500;
+    }
+
+    /* Sous-titre accrocheur sous le h1 */
+    .hero .tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      font-style: italic;
+      color: var(--ink-soft);
+      margin-bottom: 40px;
+      max-width: 600px;
+      animation: fadeInUp 1.4s ease-out;
+    }
+
+    /* Métadonnées clés en bas du hero : heure, dress code, nombre de lauréats */
+    .hero-meta {
+      display: flex; gap: 50px; flex-wrap: wrap; justify-content: center;
+      margin-top: 30px;
+      animation: fadeInUp 1.6s ease-out;
+    }
+    .hero-meta .item { text-align: center; }
+    .hero-meta .label {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-bottom: 6px;
+    }
+    .hero-meta .value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      color: var(--ink);
+    }
+
+    /* =========================================================
+       SECTIONS GÉNÉRIQUES
+       ========================================================= */
+
+    /* Centrage et espacement communs à toutes les <section> */
+    section {
+      padding: 100px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* En-tête de section : eyebrow (petit label), h2, divider, description */
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .section-header .eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-bottom: 12px;
+    }
+    .section-header h2 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      margin-bottom: 16px;
+    }
+
+    /* Ligne décorative avec deux points dorés de chaque côté,
+       créés via les pseudo-éléments ::before et ::after */
+    .section-header .divider {
+      width: 80px; height: 1px;
+      background: var(--gold);
+      margin: 20px auto;
+      position: relative;
+    }
+    .section-header .divider::before,
+    .section-header .divider::after {
+      content: "";
+      position: absolute; top: 50%;
+      width: 6px; height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      transform: translateY(-50%);
+    }
+    .section-header .divider::before { left: -14px; }
+    .section-header .divider::after { right: -14px; }
+
+    .section-header p {
+      color: var(--ink-soft);
+      max-width: 600px;
+      margin: 0 auto;
+      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+    }
+
+    /* =========================================================
+       GRILLE DES LAURÉATS
+       ========================================================= */
+
+    /* Grille auto-responsive : les cartes s'adaptent à la largeur disponible */
+    .winners-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    /* Carte individuelle d'un lauréat */
+    .winner-card {
+      background: var(--paper);
+      border: 1px solid rgba(201, 169, 97, 0.25);
+      padding: 32px 28px;
+      text-align: center;
+      position: relative; /* Nécessaire pour positionner .rank en absolu */
+      transition: transform 0.4s, box-shadow 0.4s, border-color 0.4s;
+    }
+    /* Effet de survol : légère élévation + ombre dorée + bordure plus visible */
+    .winner-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px -20px rgba(168, 136, 65, 0.4);
+      border-color: var(--gold);
+    }
+
+    /* Badge de classement (1, 2, 3…) centré et débordant au-dessus de la carte */
+    .winner-card .rank {
+      position: absolute;
+      top: -16px; left: 50%; transform: translateX(-50%);
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      color: var(--paper);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 12px rgba(168, 136, 65, 0.3);
+    }
+
+    /* Symboles décoratifs de laurier entre le badge et le nom */
+    .winner-card .laurel {
+      margin: 8px auto 16px;
+      color: var(--gold);
+      font-size: 1.2rem;
+      letter-spacing: 0.4em;
+    }
+
+    .winner-card h3 { font-size: 1.6rem; color: var(--ink); margin-bottom: 4px; }
+
+    /* Nom de famille en petites capitales dorées */
+    .winner-card .surname {
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 16px;
+    }
+
+    /* Zone optionnelle affichant l'accompagnant du lauréat */
+    .winner-card .accompagnant {
+      font-size: 0.85rem;
+      color: var(--gold-dark);
+      font-style: italic;
+      border-top: 1px solid rgba(201, 169, 97, 0.2);
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+
+    /* =========================================================
+       SECTION PROGRAMME (timeline interactive)
+       ========================================================= */
+
+    /* Fond subtil pour différencier visuellement la section programme */
+    .program-section {
+      background:
+        linear-gradient(180deg, transparent 0%, rgba(201, 169, 97, 0.04) 50%, transparent 100%);
+    }
+
+    /* Conteneur de la timeline.
+       La ligne verticale dorée est dessinée via ::before sur le conteneur. */
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px 0;
+    }
+    /* Ligne verticale centrale de la timeline */
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 100px; top: 0; bottom: 0;
+      width: 1px;
+      /* Dégradé pour que la ligne s'efface en haut et en bas */
+      background: linear-gradient(180deg, transparent 0%, var(--gold) 10%, var(--gold) 90%, transparent 100%);
+    }
+
+    /* Chaque étape de la timeline */
+    .timeline-item {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 36px;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    /* Heure affichée à gauche de la ligne */
+    .timeline-time {
+      width: 80px;
+      flex-shrink: 0;
+      text-align: right;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      color: var(--gold-dark);
+      font-weight: 600;
+      padding-top: 8px;
+    }
+
+    /* Point sur la ligne de la timeline */
+    .timeline-dot {
+      position: absolute;
+      left: 96px; top: 14px;
+      width: 9px; height: 9px;
+      background: var(--paper);
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      z-index: 1;
+    }
+    /* Étapes importantes (.highlight) : point plein + halo doré */
+    .timeline-item.highlight .timeline-dot {
+      background: var(--gold);
+      box-shadow: 0 0 0 6px rgba(201, 169, 97, 0.2);
+    }
+
+    /* Bloc de contenu à droite de la timeline (titre + description + checkbox) */
+    .timeline-content {
+      flex: 1;
+      background: var(--paper);
+      padding: 16px 24px 16px 30px;
+      border-left: 3px solid var(--gold); /* Barre verticale colorée à gauche */
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      transition: background 0.4s, opacity 0.4s;
+    }
+    /* Fond légèrement doré pour les étapes importantes */
+    .timeline-item.highlight .timeline-content {
+      background: linear-gradient(90deg, rgba(232, 213, 160, 0.15) 0%, var(--paper) 100%);
+      border-left-color: var(--gold-dark);
+    }
+    .timeline-content h4 { font-size: 1.3rem; margin-bottom: 4px; color: var(--ink); transition: color 0.4s; }
+    .timeline-content p { color: var(--ink-soft); font-size: 0.92rem; transition: color 0.4s; }
+    .timeline-content .text { flex: 1; }
+
+    /* =========================================================
+       CHECKBOX / ÉTAPE VALIDÉE
+       ========================================================= */
+
+    /* Bouton rond servant de case à cocher pour chaque étape */
+    .check {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      background: var(--paper);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .check:hover {
+      border-color: var(--gold-dark);
+      transform: scale(1.08);
+      box-shadow: 0 4px 12px rgba(201, 169, 97, 0.3);
+    }
+
+    /* Icône de coche SVG, cachée par défaut via stroke-dashoffset.
+       Technique : on anime stroke-dashoffset de 24 → 0 pour dessiner progressivement la coche. */
+    .check svg {
+      width: 16px; height: 16px;
+      stroke: var(--paper);
+      stroke-width: 3;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 24;
+      stroke-dashoffset: 24; /* Coche invisible au départ */
+      transition: stroke-dashoffset 0.4s ease 0.1s;
+    }
+
+    /* État "validé" (.done) : fond doré sur la checkbox + coche visible */
+    .timeline-item.done .check {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      border-color: var(--gold-dark);
+      box-shadow: 0 0 0 4px rgba(201, 169, 97, 0.18);
+    }
+    .timeline-item.done .check svg {
+      stroke-dashoffset: 0; /* La coche apparaît */
+    }
+    /* Contenu atténué + titre barré pour les étapes validées */
+    .timeline-item.done .timeline-content { opacity: 0.55; }
+    .timeline-item.done .timeline-content h4 {
+      text-decoration: line-through;
+      text-decoration-color: var(--gold);
+      color: var(--ink-soft);
+    }
+    .timeline-item.done .timeline-time { opacity: 0.5; }
+
+    /* =========================================================
+       BARRE DE PROGRESSION
+       ========================================================= */
+
+    /* Conteneur de la barre de progression avec infos + bouton reset */
+    .progress-wrap {
+      max-width: 800px;
+      margin: 0 auto 50px;
+      padding: 24px 30px;
+      background: var(--paper);
+      border: 1px solid rgba(201, 169, 97, 0.3);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .progress-info { flex: 1; min-width: 180px; }
+    .progress-info .label {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-bottom: 4px;
+    }
+    .progress-info .count {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      color: var(--ink);
+    }
+    .progress-info .count strong { color: var(--gold-dark); font-weight: 600; }
+
+    /* Piste de la barre de progression */
+    .progress-bar {
+      flex: 2;
+      min-width: 200px;
+      height: 8px;
+      background: rgba(201, 169, 97, 0.15);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Remplissage animé de la barre (largeur gérée en JS) */
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.65, 0, 0.35, 1); /* Ease in-out doux */
+      border-radius: 4px;
+    }
+
+    /* Bouton de réinitialisation de la checklist */
+    .reset-btn {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold-dark);
+      padding: 8px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-radius: 2px;
+    }
+    .reset-btn:hover { background: var(--gold); color: var(--paper); }
+
+    /* =========================================================
+       INFORMATIONS PRATIQUES
+       ========================================================= */
+
+    /* Grille de 4 cartes d'info (dress code, horaire, programme, photo) */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .info-card {
+      text-align: center;
+      padding: 36px 24px;
+      background: var(--paper);
+      border-top: 2px solid var(--gold); /* Accent doré en haut de chaque carte */
+    }
+    .info-card .icon { font-size: 2rem; color: var(--gold-dark); margin-bottom: 16px; }
+    .info-card h4 { font-size: 1.3rem; margin-bottom: 8px; color: var(--ink); }
+    .info-card p { color: var(--ink-soft); font-size: 0.95rem; }
+
+    /* =========================================================
+       CITATION DÉCORATIVE
+       ========================================================= */
+
+    /* Section de citation centrée avec deux lignes or en haut et en bas */
+    .quote-section {
+      text-align: center;
+      padding: 120px 20px;
+      background:
+        radial-gradient(ellipse at center, rgba(201, 169, 97, 0.1) 0%, transparent 70%),
+        var(--cream);
+      position: relative;
+    }
+    /* Lignes horizontales dorées via pseudo-éléments */
+    .quote-section::before, .quote-section::after {
+      content: "";
+      position: absolute; left: 50%; transform: translateX(-50%);
+      width: 100px; height: 1px;
+      background: var(--gold);
+    }
+    .quote-section::before { top: 60px; }
+    .quote-section::after { bottom: 60px; }
+
+    .quote-section blockquote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 4vw, 2.4rem);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink);
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.4;
+    }
+    .quote-section cite {
+      display: block;
+      margin-top: 24px;
+      font-style: normal;
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+    }
+
+    /* =========================================================
+       PIED DE PAGE
+       ========================================================= */
+
+    footer {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 60px 20px 30px;
+      text-align: center;
+    }
+    footer .footer-emblem { margin-bottom: 24px; color: var(--gold); }
+    footer h3 { color: var(--gold-light); font-size: 1.8rem; margin-bottom: 16px; letter-spacing: 0.1em; }
+    footer p { opacity: 0.7; font-size: 0.9rem; margin-bottom: 8px; }
+    footer .footer-divider { width: 60px; height: 1px; background: var(--gold); margin: 30px auto 20px; }
+    footer small { opacity: 0.5; font-size: 0.75rem; letter-spacing: 0.15em; }
+
+    /* =========================================================
+       ANIMATIONS CSS
+       ========================================================= */
+
+    /* Apparition simple en fondu */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Fondu + glissement vers le haut (utilisé pour les éléments du hero) */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Fondu + agrandissement (utilisé pour l'emblème SVG) */
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.85); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Classe .reveal : masque les éléments au départ.
+       Le JS ajoute .visible quand l'élément entre dans le viewport (IntersectionObserver). */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =========================================================
+       RESPONSIVE — MOBILE (≤ 720px)
+       ========================================================= */
+    @media (max-width: 720px) {
+      nav { padding: 16px 20px; }
+      nav ul { gap: 18px; }
+      nav a { font-size: 0.7rem; }
+      nav .logo { font-size: 1.1rem; }
+      .hero::before, .hero::after { inset: 16px; } /* Cadres plus proches du bord */
+      /* Ajustements de la timeline pour les petits écrans */
+      .timeline::before { left: 70px; }
+      .timeline-time { width: 50px; font-size: 1.1rem; }
+      .timeline-dot { left: 66px; }
+      .timeline-content { padding: 14px 18px; }
+      section { padding: 70px 16px; }
+      .hero-meta { gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGATION FIXE
+     Liens d'ancrage vers les 3 sections principales de la page.
+     ============================================================ -->
+<nav>
+  <div class="logo">NEZ D'OR</div>
+  <ul>
+    <li><a href="#gagnants">Gagnants</a></li>
+    <li><a href="#programme">Programme</a></li>
+    <li><a href="#infos">Infos</a></li>
+  </ul>
+</nav>
+
+<!-- ============================================================
+     HERO — Section d'accueil plein écran
+     Contient : emblème SVG, titre, tagline, métadonnées clés.
+     ============================================================ -->
+<header class="hero">
+
+  <!--
+    Emblème SVG dessiné à la main :
+    - Deux branches de laurier (gauche/droite) avec feuilles elliptiques
+    - Silhouette d'un nez au centre
+    - Étoile/médaille en haut
+    Toutes les couleurs utilisent le dégradé "goldGrad" défini dans <defs>.
+  -->
+  <svg class="nose-emblem" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Dégradé or diagonal réutilisé sur tous les éléments de l'emblème -->
+      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#e8d5a0"/>
+        <stop offset="50%" stop-color="#c9a961"/>
+        <stop offset="100%" stop-color="#a88841"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Branche de laurier gauche : tiges courbes + 3 feuilles elliptiques -->
+    <path d="M 20 50 Q 10 40 15 25 Q 25 30 25 45" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+    <path d="M 18 55 Q 8 52 10 38" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+    <path d="M 22 65 Q 12 65 12 50" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+    <ellipse cx="14" cy="32" rx="4" ry="2" fill="url(#goldGrad)" transform="rotate(-30 14 32)"/>
+    <ellipse cx="11" cy="45" rx="4" ry="2" fill="url(#goldGrad)" transform="rotate(-15 11 45)"/>
+    <ellipse cx="13" cy="58" rx="4" ry="2" fill="url(#goldGrad)" transform="rotate(0 13 58)"/>
+
+    <!-- Branche de laurier droite : symétrique à la gauche -->
+    <path d="M 80 50 Q 90 40 85 25 Q 75 30 75 45" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+    <path d="M 82 55 Q 92 52 90 38" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+    <path d="M 78 65 Q 88 65 88 50" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+    <ellipse cx="86" cy="32" rx="4" ry="2" fill="url(#goldGrad)" transform="rotate(30 86 32)"/>
+    <ellipse cx="89" cy="45" rx="4" ry="2" fill="url(#goldGrad)" transform="rotate(15 89 45)"/>
+    <ellipse cx="87" cy="58" rx="4" ry="2" fill="url(#goldGrad)" transform="rotate(0 87 58)"/>
+
+    <!-- Silhouette centrale du nez : forme en goutte inversée -->
+    <path d="M 50 25 Q 42 35 40 50 Q 38 60 42 65 Q 45 70 50 70 Q 55 70 58 65 Q 62 60 60 50 Q 58 35 50 25 Z"
+          fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
+    <!-- Deux petits cercles représentant les narines -->
+    <circle cx="46" cy="60" r="1.5" fill="url(#goldGrad)"/>
+    <circle cx="54" cy="60" r="1.5" fill="url(#goldGrad)"/>
+
+    <!-- Étoile / médaille dorée au sommet de l'emblème -->
+    <path d="M 50 12 L 51.5 16 L 56 16 L 52.5 19 L 54 23 L 50 20.5 L 46 23 L 47.5 19 L 44 16 L 48.5 16 Z"
+          fill="url(#goldGrad)"/>
+  </svg>
+
+  <!-- Séparateur "2026 ÉDITION" avec lignes horizontales -->
+  <div class="ornament">
+    <div class="line"></div>
+    <div class="symbol">2026 ÉDITION</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- Titre principal : "Le Nez d'Or" — le <em> colore "Nez d'Or" en doré -->
+  <h1>Le <em>Nez d'Or</em></h1>
+
+  <!-- Accroche descriptive de l'événement -->
+  <p class="tagline">Cérémonie de remise de prix &amp; dégustation à l'aveugle des plus fins palais</p>
+
+  <!-- Trois informations clés mises en avant visuellement -->
+  <div class="hero-meta">
+    <div class="item">
+      <div class="label">Cérémonie</div>
+      <div class="value">À partir de 18h30</div>
+    </div>
+    <div class="item">
+      <div class="label">Tenue</div>
+      <div class="value">Élégante</div>
+    </div>
+    <div class="item">
+      <div class="label">Lauréats</div>
+      <div class="value">10 distingués</div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     SECTION GAGNANTS — Palmarès des 10 lauréats
+     Chaque carte affiche : rang, prénom, nom, accompagnant (optionnel).
+     La classe .reveal déclenche l'animation d'apparition au scroll.
+     ============================================================ -->
+<section id="gagnants" class="reveal">
+  <div class="section-header">
+    <div class="eyebrow">Palmarès</div>
+    <h2>Les Lauréats</h2>
+    <div class="divider"></div>
+    <p>Dix nez d'exception, distingués pour leur finesse olfactive et leur passion du goût.</p>
+  </div>
+
+  <div class="winners-grid">
+
+    <!-- Carte lauréat — Structure répétée pour chaque gagnant.
+         data-* non utilisés ici, mais le pattern est extensible. -->
+
+    <div class="winner-card">
+      <div class="rank">1</div>           <!-- Badge de classement, positionné en absolu -->
+      <div class="laurel">❦ ❦ ❦</div>   <!-- Symboles décoratifs de laurier -->
+      <h3>Sonia</h3>
+      <div class="surname">Barbier Poncin</div>
+    </div>
+
+    <div class="winner-card">
+      <div class="rank">2</div>
+      <div class="laurel">❦ ❦ ❦</div>
+      <h3>Valérie</h3>
+      <div class="surname">Thieffine</div>
+    </div>
+
+    <div class="winner-card">
+      <div class="rank">3</div>
+      <div class="laurel">❦ ❦ ❦</div>
+      <h3>Katherine</h3>
+      <div class="surname">Fagot-Revurat</div>
+    </div>
+
+    <div class="winner-card">
+      <div class="rank">4</div>
+      <div class="laurel">❦ ❦ ❦</div>
+      <h3>Eliane</h3>
+      <div class="surname">Guillet-Zeyssolff</div>
+    </div>
+
+    <div class="winner-card">
+      <div class="rank">5</div>
+      <div class="laurel">❦ ❦ ❦</div>
+      <h3>Laeticia</h3>
+      <div class="surname">Sarat</div>
+      <!-- .accompagnant est optionnel : à supprimer si le lauréat vient seul -->
+      <div class="accompagnant">Accompagnée de Jean-Marc</div>
+    </div>
+
+    <div class="winner-card">
+      <div class="rank">6</div>
+      <div class="laurel">❦ ❦ ❦</div>
+      <h3>Lucile</h3>
+      <div class="surname">Curty</div>
+      <div class="accompagnant">Accompagnée d'Adrien et Flore</div>
+    </div>
+
+    <div class="winner-card">
+      <div class="rank">7</div>
+      <div class="laurel">❦ ❦ ❦</div>
+      <h3>David</h3>
+      <div class="surname">Girard Cusin</div>
+    </div>
+
+    <div class="winner-card">
+      <div class="rank">8</div>
+      <div class="laurel">❦ ❦ ❦</div>
+      <h3>Severine</h3>
+      <div class="surname">Commandeur</div>
+      <div class="accompagnant">Accompagnée d'Alain</div>
+    </div>
+
+    <div class="winner-card">
+      <div class="rank">9</div>
+      <div class="laurel">❦ ❦ ❦</div>
+      <h3>Amélie</h3>
+      <div class="surname">Pichet</div>
+    </div>
+
+    <div class="winner-card">
+      <div class="rank">10</div>
+      <div class="laurel">❦ ❦ ❦</div>
+      <h3>Carole</h3>
+      <div class="surname">Reysser</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     CITATION DÉCORATIVE — Séparation visuelle entre sections
+     ============================================================ -->
+<div class="quote-section reveal">
+  <blockquote>
+    « Un grand nez ne se contente pas de sentir — il devine, raconte, et transporte. »
+    <cite>— L'art de la dégustation</cite>
+  </blockquote>
+</div>
+
+<!-- ============================================================
+     SECTION PROGRAMME — Timeline interactive de la soirée
+     Chaque .timeline-item représente une étape.
+     - data-id : identifiant unique utilisé par le JS pour la persistance (localStorage)
+     - .highlight : étapes importantes (point plein + fond doré)
+     L'employé peut cocher chaque étape au fil de la soirée.
+     ============================================================ -->
+<section id="programme" class="program-section reveal">
+  <div class="section-header">
+    <div class="eyebrow">Déroulé de la soirée</div>
+    <h2>Le Programme</h2>
+    <div class="divider"></div>
+    <p>Une soirée orchestrée pour célébrer comme il se doit nos nez d'exception.</p>
+  </div>
+
+  <!-- Barre de progression : affiche le nombre d'étapes validées sur le total -->
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <div class="label">Avancement</div>
+      <!-- #progressCount est mis à jour dynamiquement par le JS -->
+      <div class="count"><strong id="progressCount">0</strong> / 10 étapes</div>
+    </div>
+    <!-- #progressFill : largeur animée de 0% à 100% selon les étapes cochées -->
+    <div class="progress-bar">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <!-- Remet toutes les étapes à non-cochées (avec confirmation) -->
+    <button class="reset-btn" id="resetBtn">Réinitialiser</button>
+  </div>
+
+  <!-- Timeline des étapes de la soirée -->
+  <div class="timeline" id="timeline">
+
+    <!-- Étape 1 : Installation — standard (point creux) -->
+    <div class="timeline-item" data-id="1">
+      <div class="timeline-time">17h00</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="text">
+          <h4>Installation</h4>
+          <p>Mise en place — tables, nappes, chaises.</p>
+        </div>
+        <!-- Bouton de validation : clic sur le check OU sur le contenu entier -->
+        <div class="check"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Étape 2 : Buffet -->
+    <div class="timeline-item" data-id="2">
+      <div class="timeline-time">17h15</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="text">
+          <h4>Mise en place du buffet</h4>
+          <p>Espace apéritif avec biscuits Beaufort, meringues à la Chartreuse, plateau de fromages…</p>
+        </div>
+        <div class="check"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Étape 3 : Vérifications -->
+    <div class="timeline-item" data-id="3">
+      <div class="timeline-time">17h30</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="text">
+          <h4>Vérifications finales</h4>
+          <p>Musique, enceintes, lunettes XXL — chaque détail à sa place.</p>
+        </div>
+        <div class="check"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Étape 4 : Accueil — highlight (moment clé de la soirée) -->
+    <div class="timeline-item highlight" data-id="4">
+      <div class="timeline-time">18h30</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="text">
+          <h4>Accueil des invités</h4>
+          <p>Émargement et accueil chaleureux des lauréats et de leurs accompagnants.</p>
+        </div>
+        <div class="check"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Étape 5 : Visite -->
+    <div class="timeline-item" data-id="5">
+      <div class="timeline-time">18h40</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="text">
+          <h4>Visite de l'usine</h4>
+          <p>Lancement de la soirée avec une visite guidée, verre à la main.</p>
+        </div>
+        <div class="check"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Étape 6 : Discours — highlight -->
+    <div class="timeline-item highlight" data-id="6">
+      <div class="timeline-time">19h10</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="text">
+          <h4>Discours d'ouverture</h4>
+          <p>Mot d'accueil et remerciements — environ 15 minutes.</p>
+        </div>
+        <div class="check"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Étape 7 : Remise des prix — highlight (moment central) -->
+    <div class="timeline-item highlight" data-id="7">
+      <div class="timeline-time">19h30</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="text">
+          <h4>Remise des prix</h4>
+          <p>Lunettes XXL, casquettes et lots — moment photos avec nos lauréats.</p>
+        </div>
+        <div class="check"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Étape 8 : Dégustation — highlight -->
+    <div class="timeline-item highlight" data-id="8">
+      <div class="timeline-time">20h00</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="text">
+          <h4>Dégustation à l'aveugle</h4>
+          <p>Moment convivial — yeux bandés, le nez en éveil…</p>
+        </div>
+        <div class="check"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Étape 9 : Fin progressive -->
+    <div class="timeline-item" data-id="9">
+      <div class="timeline-time">21h00</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="text">
+          <h4>Fin progressive</h4>
+          <p>Départ des invités dans une ambiance feutrée.</p>
+        </div>
+        <div class="check"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Étape 10 : Rangement -->
+    <div class="timeline-item" data-id="10">
+      <div class="timeline-time">21h15</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="text">
+          <h4>Rangement</h4>
+          <p>Nettoyage et remise en état des lieux.</p>
+        </div>
+        <div class="check"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION INFORMATIONS PRATIQUES
+     4 cartes : dress code, horaire, programme, espace photo.
+     ============================================================ -->
+<section id="infos" class="reveal">
+  <div class="section-header">
+    <div class="eyebrow">Bon à savoir</div>
+    <h2>Informations Pratiques</h2>
+    <div class="divider"></div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="icon">✦</div>
+      <h4>Dress Code</h4>
+      <p>Tenue élégante. Faites honneur à l'événement.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">⌚</div>
+      <h4>Horaire</h4>
+      <p>Accueil à partir de 18h30. Soirée jusqu'à 21h.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🍷</div>
+      <h4>Au Programme</h4>
+      <p>Visite de l'usine, apéritif, remise des prix, dégustation à l'aveugle.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">📷</div>
+      <h4>Espace Photo</h4>
+      <p>Un coin dédié pour immortaliser ce moment unique.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PIED DE PAGE
+     ============================================================ -->
+<footer>
+  <div class="footer-emblem">
+    <!-- Petit emblème nez+étoile repris du hero, en version simplifiée -->
+    <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 50 25 Q 42 35 40 50 Q 38 60 42 65 Q 45 70 50 70 Q 55 70 58 65 Q 62 60 60 50 Q 58 35 50 25 Z"
+            fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M 50 12 L 51.5 16 L 56 16 L 52.5 19 L 54 23 L 50 20.5 L 46 23 L 47.5 19 L 44 16 L 48.5 16 Z"
+            fill="currentColor"/>
+    </svg>
+  </div>
+  <h3>Nez d'Or</h3>
+  <p>Cérémonie de remise de prix</p>
+  <p>Édition 2026</p>
+  <div class="footer-divider"></div>
+  <small>À TRÈS BIENTÔT</small>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT — Comportements interactifs
+     ============================================================ -->
+<script>
+  // -------------------------------------------------------
+  // 1. ANIMATION AU SCROLL (Reveal on scroll)
+  // -------------------------------------------------------
+  // IntersectionObserver surveille les éléments .reveal.
+  // Dès qu'un élément entre dans le viewport (seuil 10%),
+  // on lui ajoute la classe .visible qui déclenche la transition CSS.
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+
+  // -------------------------------------------------------
+  // 2. CHECKLIST INTERACTIVE DU PROGRAMME
+  // -------------------------------------------------------
+
+  // Clé utilisée pour sauvegarder l'état dans le localStorage du navigateur.
+  // Changer cette clé revient à repartir d'un état vierge.
+  const STORAGE_KEY = 'nez-dor-checklist-v1';
+
+  // Références DOM des éléments interactifs
+  const items        = document.querySelectorAll('.timeline-item');
+  const progressFill = document.getElementById('progressFill');
+  const progressCount = document.getElementById('progressCount');
+  const resetBtn     = document.getElementById('resetBtn');
+
+
+  /**
+   * Charge l'état sauvegardé depuis le localStorage.
+   * Retourne un objet { "1": true, "3": true, … } où les clés sont les data-id.
+   * Retourne {} si aucune donnée ou si le JSON est corrompu.
+   */
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch (e) { return {}; }
+  }
+
+  /**
+   * Sauvegarde l'état courant dans le localStorage.
+   * @param {Object} state - Objet { id: true } pour les étapes cochées.
+   */
+  function saveState(state) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  /**
+   * Recalcule et met à jour la barre de progression.
+   * Compte les .timeline-item ayant la classe .done, puis calcule le pourcentage.
+   */
+  function updateProgress() {
+    const total = items.length;
+    const done  = document.querySelectorAll('.timeline-item.done').length;
+    const pct   = total ? (done / total) * 100 : 0;
+    progressFill.style.width = pct + '%';
+    progressCount.textContent = done;
+  }
+
+  /**
+   * Applique l'état sauvegardé sur le DOM :
+   * ajoute/retire la classe .done sur chaque item selon le localStorage.
+   * Appelée au chargement et après un reset.
+   */
+  function applyState() {
+    const state = loadState();
+    items.forEach(item => {
+      const id = item.dataset.id;
+      if (state[id]) item.classList.add('done');
+      else           item.classList.remove('done');
+    });
+    updateProgress();
+  }
+
+  // Attache les écouteurs d'événements sur chaque étape de la timeline
+  items.forEach(item => {
+    const check = item.querySelector('.check');
+
+    /**
+     * Bascule l'état de l'étape (cochée / non cochée),
+     * met à jour le localStorage et la barre de progression.
+     */
+    const toggle = () => {
+      item.classList.toggle('done');
+
+      const state = loadState();
+      const id    = item.dataset.id;
+
+      if (item.classList.contains('done')) state[id] = true;
+      else delete state[id]; // Supprime la clé plutôt que de mettre false
+
+      saveState(state);
+      updateProgress();
+    };
+
+    // Clic sur le bouton check circulaire
+    check.addEventListener('click', toggle);
+
+    // Clic sur le bloc de contenu entier (sauf si on clique directement sur .check
+    // pour éviter de déclencher toggle deux fois)
+    item.querySelector('.timeline-content').addEventListener('click', (e) => {
+      if (e.target.closest('.check')) return;
+      toggle();
+    });
+
+    // Curseur pointer sur le contenu pour indiquer que c'est cliquable
+    item.querySelector('.timeline-content').style.cursor = 'pointer';
+  });
+
+  // Bouton de réinitialisation : supprime la clé du localStorage et réapplique l'état vide
+  resetBtn.addEventListener('click', () => {
+    if (confirm('Réinitialiser toutes les étapes ?')) {
+      localStorage.removeItem(STORAGE_KEY);
+      applyState();
+    }
+  });
+
+  // Initialisation au chargement de la page
+  applyState();
+</script>
+
+</body>
+</html>
